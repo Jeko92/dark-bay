@@ -1,0 +1,56 @@
+{
+  "types": {
+    "chore": {
+      "description": "Routine repository maintenance, tooling updates, or dependency bumps"
+    },
+    "feat": {
+      "description": "A new feature, application implementation, or challenge solution"
+    },
+    "fix": {
+      "description": "A bugfix in an application, utility package, or assignment"
+    },
+    "refactor": {
+      "description": "Code change that neither fixes a bug nor adds a feature"
+    },
+    "docs": {
+      "description": "Documentation updates across READMEs, ADRs, or internal notes"
+    },
+    "style": {
+      "description": "Formatting, missing semi-colons, whitespace (no logic changes)"
+    },
+    "test": {
+      "description": "Adding or correcting test suites"
+    },
+    "perf": {
+      "description": "A change that improves runtime performance or build speeds"
+    },
+    "build": {
+      "description": "Changes affecting Turborepo pipelines, pnpm workspaces, or compilers"
+    },
+    "ci": {
+      "description": "Changes to GitHub Actions workflows or PR validation scripts"
+    },
+    "revert": {
+      "description": "Reverts a previous commit history entry"
+    }
+  },
+  "scopes": {
+    "app": "Global app setup, TypeORM/SQLite config, migrations, CI/CD, and dependency management",
+    "auctions": "Auction entity, CRUD endpoints, default 3-day duration rule, filtering, and pagination",
+    "offers": "Offer entity, bidding logic, active price calculation, and conflict status handling (409/400)",
+    "auth": "User model, JWT authentication, passport guards, protected routes, and self-bidding prevention",
+    "docs": "Swagger/OpenAPI configuration, DTO schema decorations, and README documentation",
+    "github": ".github/ issue/PR templates and GitHub Actions CI workflows"
+  },
+  "footerTypes": {
+    "BREAKING CHANGE": {
+      "description": "The commit introduces architectural breaking changes"
+    },
+    "Closes": {
+      "description": "Closes a tracking issue or pull request"
+    },
+    "Co-authored-by": {
+      "description": "Credits mentors or cohort peers during pairing sessions"
+    }
+  }
+}
