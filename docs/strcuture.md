@@ -41,63 +41,51 @@
 * Wire up the database using TypeORM
 
 # Auction
-* Scaffold module
-* Model the `Auction` entity
-* Create DTOs (Add Swagger decorators ...demonstrating the expected format)
-* Business logic (service)
-* Controller (call service) (Add swagger decorators ...demonstrating the expected format)
-* Establish its relationship with the `Offer`.
-* Which HTTP status code best communicates a conflict with the current state of the resource?
-* Define specific Response Models (DTOs)
-* sorting the auctions by end date, with the most recent first
-* lock down your API so that creating auctions or placing bids requires
-  authentication, while browsing the auction list remains completely public?
-* Strip the `seller` and `bidder` fields from your
-  incoming DTOs and pull the identity directly from the verified token.
-* (Bonus): Expose a computed status field (`open` or `closed`) on the auction response based
-  on the current timestamp, saving the client from doing date math.
-
-Create the core resource of the API
-Design the endpoints to handle creation and retrieval.
-
-Define the necessary properties to track the item's details and the seller's identity.
-
-Look at your request payload. Which fields must the client provide, and which should the server generate independently?
+* [ ] Scaffold module
+* [ ] Model the `Auction` entity
+* [ ] Create DTOs (Add Swagger decorators ...demonstrating the expected format)
+* [ ] Business logic (service)
+* [ ] Controller (call service) (Add swagger decorators ...demonstrating the expected format)
+* [ ] Establish its relationship with the `Offer`.
+* [ ] Which HTTP status code best communicates a conflict with the current state of the resource?
+* [ ] Define specific Response Models (DTOs)
+* [ ] sorting the auctions by end date, with the most recent first
+* [ ] lock down your API so that creating auctions or placing bids requires authentication, while browsing the auction list remains completely public?
+* [ ] Strip the `seller` and `bidder` fields from yourincoming DTOs and pull the identity directly from the verified token.
+* [ ] (Bonus): Expose a computed status field (`open` or `closed`) on the auction response based on the current timestamp, saving the client from doing date math.
 
 # Offer
-* Scaffold module
-* Model the `Offer` entity 
-* Create DTOs (Add Swagger decorators ...demonstrating the expected format)
-* Business logic (service)
-* Controller (call service) (Add swagger decorators ...demonstrating the expected format)
-* Establish its relationship with the `Auction`
-* Which HTTP status code best communicates a conflict with the current state of the resource?
-* Define specific Response Models (DTOs)
-* Implement the bidding service
-* validate the state of the auction, Before saving an offer, your application must.
-* prevent a seller from placing a
-  bid on their own listing
-* Strip the `seller` and `bidder` fields from your
-  incoming DTOs and pull the identity directly from the verified token.
+* [ ] Scaffold module
+* [ ] Model the `Offer` entity 
+* [ ] Create DTOs (Add Swagger decorators ...demonstrating the expected format)
+* [ ] Business logic (service)
+* [ ] Controller (call service) (Add swagger decorators ...demonstrating the expected format)
+* [ ] Establish its relationship with the `Auction`
+* [ ] Which HTTP status code best communicates a conflict with the current state of the resource?
+* [ ] Define specific Response Models (DTOs)
+* [ ] Implement the bidding service
+* [ ] validate the state of the auction, Before saving an offer, your application must.
+* [ ] prevent a seller from placing a bid on their own listing
+* [ ] Strip the `seller` and `bidder` fields from your incoming DTOs and pull the identity directly from the verified token.
 
 # User
-* Scaffold module
-* Model the `User` Entity
-* Create DTOs (Add Swagger decorators ...demonstrating the expected format)
-* Business logic (service)
-* Controller (call service) (Add swagger decorators ...demonstrating the expected format)
-* Which HTTP status code best communicates a conflict with the current state of the resource?
-* Define specific Response Models (DTOs)
-* (Bonus): Divide users and introduce `admin` role. Implement a guard that allows admins to delete
+* [ ] Scaffold module
+* [ ] Model the `User` Entity
+* [ ] Create DTOs (Add Swagger decorators ...demonstrating the expected format)
+* [ ] Business logic (service)
+* [ ] Controller (call service) (Add swagger decorators ...demonstrating the expected format)
+* [ ] Which HTTP status code best communicates a conflict with the current state of the resource?
+* [ ] Define specific Response Models (DTOs)
+* [ ] (Bonus): Divide users and introduce `admin` role. Implement a guard that allows admins to delete
   any auction, whereas standard users can only delete their own listings.
 
 # Global/Common
-* Enforce global validation.
-* - Implement pagination and the following filtering options for your auction list:
+* [ ] Enforce global validation.
+* [ ] - Implement pagination and the following filtering options for your auction list:
     - `?status=open|closed`
     - `?min-price` & `?max-price`
-* Mount Swagger and configure it to recognize your DTOs.
-* configure the documentation to handle authenticated routes (Ensure the UI provides an Authorize
+* [ ] Mount Swagger and configure it to recognize your DTOs.
+* [ ] configure the documentation to handle authenticated routes (Ensure the UI provides an Authorize
   dialog so users can paste their JWT and test protected endpoints)
 
 # Auth module
