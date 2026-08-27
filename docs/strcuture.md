@@ -55,8 +55,8 @@
 * [ ] (Bonus): Expose a computed status field (`open` or `closed`) on the auction response based on the current timestamp, saving the client from doing date math.
 
 # Offer
-* [ ] Scaffold module
-* [ ] Model the `Offer` entity 
+* [X] Scaffold module
+* [X] Model the `Offer` entity 
 * [ ] Create DTOs (Add Swagger decorators ...demonstrating the expected format)
 * [ ] Business logic (service)
 * [ ] Controller (call service) (Add swagger decorators ...demonstrating the expected format)
@@ -69,8 +69,8 @@
 * [ ] Strip the `seller` and `bidder` fields from your incoming DTOs and pull the identity directly from the verified token.
 
 # User
-* [ ] Scaffold module
-* [ ] Model the `User` Entity
+* [X] Scaffold module
+* [X] Model the `User` Entity
 * [ ] Create DTOs (Add Swagger decorators ...demonstrating the expected format)
 * [ ] Business logic (service)
 * [ ] Controller (call service) (Add swagger decorators ...demonstrating the expected format)
