@@ -1,5 +1,6 @@
 import { config } from 'dotenv';
 import { DataSource } from 'typeorm';
+import { Auction } from '../auctions/entities/auction.entity';
 
 config({ quiet: true });
 
@@ -11,7 +12,7 @@ if (!dbFile) {
 export const AppDataSource = new DataSource({
   type: 'better-sqlite3',
   database: dbFile,
-  entities: [],
+  entities: [Auction],
   migrations: ['src/db/migrations/*.ts'],
   synchronize: true,
   enableWAL: true,
