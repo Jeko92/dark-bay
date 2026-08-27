@@ -41,8 +41,8 @@
 * Wire up the database using TypeORM
 
 # Auction
-* [ ] Scaffold module
-* [ ] Model the `Auction` entity
+* [x] Scaffold module
+* [x] Model the `Auction` entity
 * [ ] Create DTOs (Add Swagger decorators ...demonstrating the expected format)
 * [ ] Business logic (service)
 * [ ] Controller (call service) (Add swagger decorators ...demonstrating the expected format)

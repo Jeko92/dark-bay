@@ -4,11 +4,13 @@ import { AppService } from './app.service';
 import { ConfigModule } from '@nestjs/config';
 import { AppDataSource } from './db/data-source';
 import { TypeOrmModule } from '@nestjs/typeorm';
+import { AuctionsModule } from './auctions/auctions.module';
 
 @Module({
   imports: [
     ConfigModule.forRoot({ isGlobal: true }),
     TypeOrmModule.forRoot(AppDataSource.options),
+    AuctionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],
