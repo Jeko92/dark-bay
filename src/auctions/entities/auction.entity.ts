@@ -1,6 +1,5 @@
 import {
   Column,
-  CreateDateColumn,
   Entity,
   PrimaryGeneratedColumn
 } from 'typeorm';
@@ -25,6 +24,6 @@ export class Auction {
   @Column()
   seller!: string;
 
-  @CreateDateColumn()
+  @Column({ type: "datetime" })
   endDate!: Date;
 }
