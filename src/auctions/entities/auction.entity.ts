@@ -1,6 +1,9 @@
+import { Offer } from 'src/offer/entities/offer.entity';
+import { User } from 'src/user/entities/user.entity';
 import {
   Column,
   Entity,
+  ManyToOne,
   PrimaryGeneratedColumn
 } from 'typeorm';
 
@@ -20,9 +23,12 @@ export class Auction {
 
   @Column()
   currentPrice!: number;
-  // TODO: replace with real DB relation once seller/user table is present
-  @Column()
-  seller!: string;
+
+  @ManyToOne(() => Offer, (offer) => offer.auction)
+  offers!: Offer[];
+
+  @ManyToOne(() => User)
+  seller!: User;
 
   @Column({ type: "datetime" })
   endDate!: Date;
