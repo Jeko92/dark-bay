@@ -44,9 +44,10 @@
 * [x] Scaffold module
 * [x] Model the `Auction` entity
 * [x] Create DTOs
-* [ ] Swagger Decorators for Entities
+* [x] Swagger Decorators for Entities
 * [ ] Business logic (service)
-* [ ] Controller (call service) (Add swagger decorators ...demonstrating the expected format)
+* [ ] Controller (call service) 
+* [ ] Swagger Decorators for Controllers
 * [ ] Establish its relationship with the `Offer`.
 * [ ] Which HTTP status code best communicates a conflict with the current state of the resource?
 * [ ] Define specific Response Models (DTOs)
@@ -56,12 +57,13 @@
 * [ ] (Bonus): Expose a computed status field (`open` or `closed`) on the auction response based on the current timestamp, saving the client from doing date math.
 
 # Offer
-* [X] Scaffold module
-* [X] Model the `Offer` entity 
+* [x] Scaffold module
+* [x] Model the `Offer` entity 
 * [x] Create DTOs
-* [ ] Swagger Decorators for Entities 
+* [x] Swagger Decorators for Entities 
 * [ ] Business logic (service)
-* [ ] Controller (call service) (Add swagger decorators ...demonstrating the expected format)
+* [ ] Controller (call service) 
+* [ ] Swagger Decorators for Controllers
 * [ ] Establish its relationship with the `Auction`
 * [ ] Which HTTP status code best communicates a conflict with the current state of the resource?
 * [ ] Define specific Response Models (DTOs)
@@ -71,12 +73,13 @@
 * [ ] Strip the `seller` and `bidder` fields from your incoming DTOs and pull the identity directly from the verified token.
 
 # User
-* [X] Scaffold module
-* [X] Model the `User` Entity
+* [x] Scaffold module
+* [x] Model the `User` Entity
 * [x] Create DTOs
-* [ ] Swagger Decorators for Entities
+* [x] Swagger Decorators for Entities
 * [ ] Business logic (service)
-* [ ] Controller (call service) (Add swagger decorators ...demonstrating the expected format)
+* [ ] Controller (call service) 
+* [ ] Swagger Decorators for Controllers
 * [ ] Which HTTP status code best communicates a conflict with the current state of the resource?
 * [ ] Define specific Response Models (DTOs)
 * [ ] (Bonus): Divide users and introduce `admin` role. Implement a guard that allows admins to delete
