@@ -1,10 +1,12 @@
 import {
-  IsDate,
+  IsDateString,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsPositive,
   IsString,
-  MaxLength
+  IsUUID,
+  MaxLength,
 } from 'class-validator';
 
 export class CreateAuctionDto {
@@ -20,17 +22,14 @@ export class CreateAuctionDto {
 
   @IsNumber()
   @IsPositive()
-  startPrice!: number;
+  startingPrice!: number;
 
-  @IsNumber()
-  @IsPositive()
-  currentPrice!: number;
-  // TODO: replace with real DB relation once seller/user table is present
+  // TODO: This one is temporary, identity should come from the JWT.
+  @IsUUID()
+  sellerId!: string;
 
-  @IsString()
-  @IsNotEmpty()
-  seller!: string;
-
-  @IsDate()
-  endDate!: Date;
+  // TODO: service defaults this to +3 days when no enddDate is provided.
+  @IsOptional()
+  @IsDateString()
+  endDate?: string;
 }
