@@ -1,44 +1,43 @@
 # Documentation
 
 ## Objective
-* users post auctions
-* bid on them with offers
-* traverse auctions
-* Provide validated, pagination, filtered, sorted, documented API
+* [ ] users post auctions
+* [ ] bid on them with offers
+* [ ] traverse auctions
+* [ ] Provide validated, pagination, filtered, sorted, documented API
 
 ## User stories
-* where a bid is only accepted if it beats the current highest price
-* Authentication acts as the final layer
-* Sellers need a way to create an auction
-* list all available auctions
-* fetch specific listings
-* Users submit offers
-* The system evaluates offers against strict rules.
+* [ ] where a bid is only accepted if it beats the current highest price
+* [ ] Authentication acts as the final layer
+* [ ] Sellers need a way to create an auction
+* [ ] list all available auctions
+* [ ] fetch specific listings
+* [ ] Users submit offers
+* [ ] The system evaluates offers against strict rules.
 
 ## Architecture
-* Create mermaid diagrams with entity relations
-* How do you handle clients requesting a specific page size or
-  filtering auctions by their current status (open vs. closed)? Make sure to include metadata
-  (total items, total pages) in your paginated responses.
+* [ ] Create mermaid diagrams with entity relations
+* [ ] How do you handle clients requesting a specific page size or filtering auctions by their current status (open vs. closed)? Make sure to include metadata
+  * (total items, total pages) in your paginated responses.
 * Define schemas for Entities
-* - Auctions fields (title, description), pricing (starting price, current price), lifecycle (end date)
-* - Offer fields (amount, seller, bidder)
-* - User fields (username, password)
+* [ ] Auctions fields (title, description), pricing (starting price, current price), lifecycle (end date)
+* [ ] Offer fields (amount, seller, bidder)
+* [ ] User fields (username, password)
 
 ## Security
-* Protect routes
-* Control what clients sees (Proper responseDTO's)
-* Authentication mit JWT+Salting
-* Implement a JWT-based login flow.
-* Never save passwords as plaintext only hashed passwords
-* Global Guard
-* Implement RBAC(Role Based Access Control) 
+* [ ] Protect routes
+* [ ] Control what clients sees (Proper responseDTO's)
+* [ ] Authentication mit JWT+Salting
+* [ ] Implement a JWT-based login flow.
+* [ ] Never save passwords as plaintext only hashed passwords
+* [ ] Global Guard
+* [ ] Implement RBAC(Role Based Access Control) 
 (Replace the plaintext seller and bidder strings with a secure identity system). 
 
 # Bootstrap
-* Initialize a new NestJS project 
-* Structure your dependencies
-* Wire up the database using TypeORM
+* [ ] Initialize a new NestJS project 
+* [ ] Structure your dependencies
+* [ ] Wire up the database using TypeORM
 
 # Auction
 * [x] Scaffold module
@@ -48,13 +47,13 @@
 * [x] Controller (call service)  and Business logic (service)
   * [x] Create
   * [x] Read
-* [ ] Swagger Decorators for Controllers
-* [ ] Establish its relationship with the `Offer`.
+* [x] Swagger Decorators for Controllers
+* [x] Establish its relationship with the `Offer`.
 * [ ] Which HTTP status code best communicates a conflict with the current state of the resource?
-* [ ] Define specific Response Models (DTOs)
+* [x] Define specific Response Models (DTOs)
 * [ ] sorting the auctions by end date, with the most recent first
 * [ ] lock down your API so that creating auctions or placing bids requires authentication, while browsing the auction list remains completely public?
-* [ ] Strip the `seller` and `bidder` fields from yourincoming DTOs and pull the identity directly from the verified token.
+* [ ] Strip the `seller` and `bidder` fields from your incoming DTOs and pull the identity directly from the verified token.
 * [ ] (Bonus): Expose a computed status field (`open` or `closed`) on the auction response based on the current timestamp, saving the client from doing date math.
 
 # Offer
@@ -78,13 +77,13 @@
 * [x] Model the `User` Entity
 * [x] Create DTOs
 * [x] Swagger Decorators for Entities
-* [ ] Business logic (service)
-* [ ] Controller (call service) 
-* [ ] Swagger Decorators for Controllers
-* [ ] Which HTTP status code best communicates a conflict with the current state of the resource?
-* [ ] Define specific Response Models (DTOs)
+* [x] Business logic (service)
+* [x] Controller (call service) 
+* [x] Swagger Decorators for Controllers
+* [x] Which HTTP status code best communicates a conflict with the current state of the resource?
+* [x] Define specific Response Models (DTOs)
 * [ ] (Bonus): Divide users and introduce `admin` role. Implement a guard that allows admins to delete
-  any auction, whereas standard users can only delete their own listings.
+* [ ] any auction, whereas standard users can only delete their own listings.
 
 # Global/Common
 * [ ] Enforce global validation.
@@ -96,25 +95,24 @@
   dialog so users can paste their JWT and test protected endpoints)
 
 # Auth module
-* Create DTOs
-* Business logic (service)
-* Controller (call service
-* Implement local strategy
-* implement jwt-strategy
+* [ ] Create DTOs
+* [ ] Business logic (service)
+* [ ] Controller (call service
+* [ ] Implement local strategy
+* [ ] implement jwt-strategy
 
 #  Bonus Challenges
-* Setup db migrations(Turn off automatic synchronization).
-* Watchlist-Implement a user's ability to add and remove an auction to their own watchlist and retrieve it
-* (Rate Limiting)-Track offer submissions. Reject sudden bursts of bids from the same user within a short
+* [ ] Setup db migrations(Turn off automatic synchronization).
+* [ ] Watchlist-Implement a user's ability to add and remove an auction to their own watchlist and retrieve it
+* [ ] (Rate Limiting)-Track offer submissions. Reject sudden bursts of bids from the same user within a short
   time window using a `429 Too Many Requests` status.
 
 
 # Business logic
 
-- If a client omits an end date during creation, how do you enforce a default duration of three days within your service logic?
-- How do you link multiple bids to a single listing to track the complete bid history?
-- Edge cases to handle:
-  - What happens if the auction is already closed?
-  - What if the bid fails to exceed the current price (or the starting price, if it is the very first bid)?
-- Rejecting a bid because the amount is too low is a business rule violation,
-  not a malformed request syntax
+* [ ] If a client omits an end date during creation, how do you enforce a default duration of three days within your service logic?
+* [ ] How do you link multiple bids to a single listing to track the complete bid history?
+* [ ] Edge cases to handle:
+  * [ ] What happens if the auction is already closed?
+  * [ ] What if the bid fails to exceed the current price (or the starting price, if it is the very first bid)?
+* [ ] Rejecting a bid because the amount is too low is a business rule violation, not a malformed request syntax
