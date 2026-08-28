@@ -4,6 +4,7 @@ import {
   Column,
   Entity,
   ManyToOne,
+  OneToMany,
   PrimaryGeneratedColumn
 } from 'typeorm';
 
@@ -13,23 +14,23 @@ export class Auction {
   id!: string;
 
   @Column()
-  title!:string;
+  title!: string;
 
   @Column()
   description!: string;
 
   @Column()
-  startPrice!: number;
+  startingPrice!: number;
 
   @Column()
-  currentPrice!: number;
-
-  @ManyToOne(() => Offer, (offer) => offer.auction)
-  offers!: Offer[];
+  endDate!: Date;
 
   @ManyToOne(() => User)
   seller!: User;
 
-  @Column({ type: "datetime" })
-  endDate!: Date;
+  @Column({ type: 'datetime' })
+  createdAt!: Date;
+
+  @OneToMany(() => Offer, (offer) => offer.auction)
+  offers!: Offer[];
 }
