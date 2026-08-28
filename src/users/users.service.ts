@@ -1,26 +1,57 @@
-import { Injectable } from '@nestjs/common';
+import {
+  ConflictException,
+  Injectable,
+  NotFoundException
+} from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
+import { InjectRepository } from '@nestjs/typeorm';
+import { User } from './entities/user.entity';
+import { Repository } from 'typeorm';
+import { UserResponseDto } from './dto/user-response.dto';
+import { hashSecret } from '../common/utils/hashUtils';
 
 @Injectable()
 export class UserService {
-  create(_createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(
+    @InjectRepository(User)
+    private readonly usersRepository: Repository<User>,
+  ) {}
+
+  async create(createUserDto: CreateUserDto):Promise<UserResponseDto> {
+    const existing = await this.findByUsername(createUserDto.username);
+    if(existing){
+      throw new ConflictException(
+        `Username "${createUserDto.username}" is already taken`,
+      );
+    }
+
+    const user = this.usersRepository.create({
+      username: createUserDto.username,
+      passwordHash: hashSecret(createUserDto.password),
+    });
+
+    return await this.usersRepository.save(user);
   }
 
   findAll() {
-    return `This action returns all user`;
+    return this.usersRepository.find();
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findByUsername(username: string):Promise<User | null> {
+    return this.usersRepository.findOneBy({username});
   }
 
-  update(id: number, _updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  findOne(id: string) {
+    return this.usersRepository.findOne({
+      where: { id },
+    });
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} user`;
+  async remove(id: string) {
+    const result = await this.usersRepository.delete(id);
+
+    if ((result.affected ?? 0) === 0) {
+      throw new NotFoundException(`User with id ${id} not found.`);
+    }
   }
 }
