@@ -9,5 +9,6 @@ import { ConfigService } from '@nestjs/config';
   imports: [TypeOrmModule.forFeature([Auction]), ConfigService],
   controllers: [AuctionsController],
   providers: [AuctionsService],
+  exports: [AuctionsService]
 })
 export class AuctionsModule {}
