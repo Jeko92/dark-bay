@@ -5,11 +5,13 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  Query,
 } from '@nestjs/common';
 import { AuctionsService } from './auctions.service';
 import { CreateAuctionDto } from './dto/create-auction.dto';
 import { ApiOperation } from 'node_modules/@nestjs/swagger/dist/decorators/api-operation.decorator';
 import { ApiNotFoundResponse, ApiOkResponse } from '@nestjs/swagger';
+import { AuctionQueryDto } from './dto/auction-query.dto';
 
 @Controller('auctions')
 export class AuctionsController {
@@ -25,8 +27,8 @@ export class AuctionsController {
   @ApiOperation({ summary: 'Get all auctions' })
   @ApiOkResponse({ description: 'Returns a list of all auctions.' })
   @Get()
-  findAll() {
-    return this.auctionsService.findAll();
+  findAll(@Query() query: AuctionQueryDto) {
+    return this.auctionsService.findAll(query);
   }
 
   @ApiOperation({ summary: 'Get a specific auction by ID' })

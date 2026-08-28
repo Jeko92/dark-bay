@@ -1,4 +1,8 @@
-import { Injectable, NotFoundException } from '@nestjs/common';
+import {
+  ForbiddenException,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import { CreateAuctionDto } from './dto/create-auction.dto';
 import { addDays } from 'src/common/utils/add-days';
 import { ConfigService } from '@nestjs/config';
@@ -15,6 +19,8 @@ import { AuctionResponseDto } from './dto/auction-response.dto';
 import { plainToInstance } from 'class-transformer';
 import { AuctionQueryDto } from './dto/auction-query.dto';
 import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
+import { auctionStatusWhereClause } from '../common/utils/auction-status';
+import { RequestWithUser } from '../auth/request-with-user.interface';
 
 @Injectable()
 export class AuctionsService {
@@ -83,15 +89,12 @@ export class AuctionsService {
       meta: {
         page,
         limit,
-        total,
         totalPages: Math.ceil(total / limit),
       },
     };
   }
 
-  async findOne(
-    id: string,
-  ): Promise<{ data: AuctionResponseDto; meta: PaginationQueryDto }> {
+  async findOne(id: string): Promise<{ data: AuctionResponseDto }> {
     const auction = await this.auctionsRepository.findOne({
       where: { id },
       relations: { seller: true },
@@ -105,12 +108,20 @@ export class AuctionsService {
 
     return {
       data: data,
-      meta: {
-        page,
-        limit,
-        // total,
-        // totalPages: Math.ceil(total / limit)
-      },
     };
+  }
+
+  async remove(id: string, requester: RequestWithUser['user']): Promise<void> {
+    const auction = await this.findOne(id);
+
+    const isOwner = auction.data.seller.id === requester.id;
+    const isAdmin = requester.roles.includes('admin');
+    if (!isOwner && !isAdmin) {
+      throw new ForbiddenException(
+        'Only the auction owner or an admin can delete this auction',
+      );
+    }
+
+    await this.auctionsRepository.remove({ ...auction.data }[0]);
   }
 }
