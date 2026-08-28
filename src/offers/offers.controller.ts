@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post
+} from '@nestjs/common';
 import {
   ApiConflictResponse,
   ApiCreatedResponse,
@@ -26,7 +33,7 @@ export class OffersController {
   @Post()
   placeOffer (
     @Body() createOfferDto: CreateOfferDto,
-    @Param('auctionId') auctionId: string,
+    @Param('auctionId', ParseUUIDPipe) auctionId: string,
     @Body('bidder') bidderId: string
   ) {
     const bidder = { id: bidderId } as UserSummaryDto;
@@ -38,7 +45,7 @@ export class OffersController {
     description: 'Returns all offers for the auction, newest first.',
   })
   @Get()
-  findAllForAuction ( @Param('auctionId') auctionId: string ) {
+  findAllForAuction ( @Param('auctionId', ParseUUIDPipe) auctionId: string ) {
     return this.offersService.findAllForAuction(auctionId);
   }
 
@@ -48,7 +55,7 @@ export class OffersController {
       'Returns the current highest offer, or the starting price if there are no offers yet.',
   })
   @Get('current-price')
-  getCurrentPrice ( @Param('auctionId') auctionId: string ) {
+  getCurrentPrice ( @Param('auctionId', ParseUUIDPipe) auctionId: string ) {
     return this.offersService.getCurrentPrice(auctionId);
   }
 }

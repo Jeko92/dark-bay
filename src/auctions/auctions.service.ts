@@ -36,11 +36,10 @@ export class AuctionsService {
     return this.auctionsRepository.find();
   }
 
-  findOne(id: string): Promise<Auction | null> {
-    const auction = this.auctionsRepository.findOne({
+  async findOne(id: string): Promise<Auction> {
+    const auction = await this.auctionsRepository.findOne({
       where: { id },
       relations: { seller: true },
-      select: { seller: { id: true, username: true } },
     });
     if (!auction) {
       throw new NotFoundException(`Auction with id ${id} not found`);

@@ -1,5 +1,12 @@
 import { CreateUserDto } from './dto/create-user.dto';
-import { Body, Controller, Delete, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Delete,
+  Param,
+  ParseUUIDPipe,
+  Post
+} from '@nestjs/common';
 import {
   ApiConflictResponse,
   ApiOkResponse,
@@ -23,7 +30,7 @@ export class UserController {
 
   @ApiOperation({ summary: 'Delete a user' })
   @Delete(':id')
-  remove(@Param('id') id: string) {
+  remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.remove(id);
   }
 }

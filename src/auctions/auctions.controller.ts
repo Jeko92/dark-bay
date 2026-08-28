@@ -1,4 +1,11 @@
-import { Body, Controller, Get, Param, Post } from '@nestjs/common';
+import {
+  Body,
+  Controller,
+  Get,
+  Param,
+  ParseUUIDPipe,
+  Post
+} from '@nestjs/common';
 import { AuctionsService } from './auctions.service';
 import { CreateAuctionDto } from './dto/create-auction.dto';
 import { ApiOperation } from 'node_modules/@nestjs/swagger/dist/decorators/api-operation.decorator';
@@ -26,7 +33,7 @@ export class AuctionsController {
   @ApiOkResponse({ description: 'Returns the auction with the specified ID.' })
   @ApiNotFoundResponse({ description: 'Auction not found.' })
   @Get(':id')
-  findOne(@Param('id') id: string) {
+  findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.auctionsService.findOne(id);
   }
 }
