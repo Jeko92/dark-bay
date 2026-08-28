@@ -2,12 +2,14 @@ import { NestFactory } from '@nestjs/core';
 import { AppModule } from './app.module';
 import { DocumentBuilder, SwaggerModule } from '@nestjs/swagger';
 
-async function bootstrap () {
+async function bootstrap() {
   const app = await NestFactory.create(AppModule);
 
   const config = new DocumentBuilder()
     .setTitle('DarkBay API')
-    .setDescription('An underground marketplace for bidding on auctions an listing auction items')
+    .setDescription(
+      'An underground marketplace for bidding on auctions an listing auction items',
+    )
     .setVersion('1.0')
     .addBearerAuth()
     .build();

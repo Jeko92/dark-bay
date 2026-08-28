@@ -45,8 +45,9 @@
 * [x] Model the `Auction` entity
 * [x] Create DTOs
 * [x] Swagger Decorators for Entities
-* [ ] Business logic (service)
-* [ ] Controller (call service) 
+* [x] Controller (call service)  and Business logic (service)
+  * [x] Create
+  * [x] Read
 * [ ] Swagger Decorators for Controllers
 * [ ] Establish its relationship with the `Offer`.
 * [ ] Which HTTP status code best communicates a conflict with the current state of the resource?

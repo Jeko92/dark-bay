@@ -11,25 +11,34 @@ import {
 } from 'class-validator';
 
 export class CreateAuctionDto {
-  @ApiProperty({description: 'Title of the auction', example:'Vintage SNES'})
+  @ApiProperty({ description: 'Title of the auction', example: 'Vintage SNES' })
   @IsString()
   @IsNotEmpty()
   @MaxLength(200)
   title!: string;
 
-  @ApiProperty({description: 'Short Description of the Auction' , example:'16Bit Video Console from the 90ies.'})
+  @ApiProperty({
+    description: 'Short Description of the Auction',
+    example: '16Bit Video Console from the 90ies.',
+  })
   @IsString()
   @IsNotEmpty()
   @MaxLength(2000)
   description!: string;
 
-  @ApiProperty({ description: 'Plain number, not a currency-formatted string', example: 100 })
+  @ApiProperty({
+    description: 'Plain number, not a currency-formatted string',
+    example: 100,
+  })
   @IsNumber()
   @IsPositive()
   startingPrice!: number;
 
   // TODO: This one is temporary, identity should come from the JWT.
-  @ApiProperty({description: 'Who is selling this item', example:'Supermario'})
+  @ApiProperty({
+    description: 'Who is selling this item',
+    example: 'Supermario',
+  })
   @IsUUID()
   sellerId!: string;
 
