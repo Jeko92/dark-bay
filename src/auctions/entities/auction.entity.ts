@@ -1,5 +1,5 @@
-import { Offer } from 'src/offer/entities/offer.entity';
-import { User } from 'src/user/entities/user.entity';
+import { Offer } from 'src/offers/entities/offer.entity';
+import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   Entity,

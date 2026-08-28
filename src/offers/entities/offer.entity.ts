@@ -1,5 +1,5 @@
 import { Auction } from "src/auctions/entities/auction.entity";
-import { User } from "src/user/entities/user.entity";
+import { User } from "src/users/entities/user.entity";
 import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
 
 @Entity()
