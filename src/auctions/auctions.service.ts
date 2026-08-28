@@ -4,12 +4,14 @@ import { addDays } from 'src/common/utils/addDays';
 import { ConfigService } from '@nestjs/config';
 import { Auction } from './entities/auction.entity';
 import { Repository } from 'typeorm';
+import { InjectRepository } from '@nestjs/typeorm';
 
 @Injectable()
 export class AuctionsService {
   constructor(
-    private readonly configService: ConfigService,
+    @InjectRepository(Auction)
     private readonly auctionsRepository: Repository<Auction>,
+    private readonly configService: ConfigService,
   ) {}
 
   create(createAuctionDto: CreateAuctionDto): Promise<Auction> {
@@ -31,16 +33,14 @@ export class AuctionsService {
   }
 
   findAll(): Promise<Auction[]> {
-    const auctions = this.auctionsRepository.find({
-      //TODO: Add relations to fetch seller and offers, but be careful with performance and data size.
-    });
-    return auctions;
+    return this.auctionsRepository.find();
   }
 
   findOne(id: string): Promise<Auction | null> {
     const auction = this.auctionsRepository.findOne({
       where: { id },
-      //TODO: Add relations to fetch seller and offers, but be careful with performance and data size.
+      relations: { seller: true },
+      select: { seller: { id: true, username: true } },
     });
     if (!auction) {
       throw new NotFoundException(`Auction with id ${id} not found`);

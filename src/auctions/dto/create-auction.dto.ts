@@ -42,7 +42,6 @@ export class CreateAuctionDto {
   @IsUUID()
   sellerId!: string;
 
-  // TODO: service defaults this to +3 days when no enddDate is provided.
   @ApiProperty({
     description: 'ISO 8601 date. Defaults to 3 days from creation if omitted.',
     example: '2026-09-01T00:00:00.000Z',

@@ -2,6 +2,7 @@ import { Offer } from 'src/offers/entities/offer.entity';
 import { User } from 'src/users/entities/user.entity';
 import {
   Column,
+  CreateDateColumn,
   Entity,
   ManyToOne,
   OneToMany,
@@ -28,7 +29,7 @@ export class Auction {
   @ManyToOne(() => User)
   seller!: User;
 
-  @Column({ type: 'datetime' })
+  @CreateDateColumn({ type: 'datetime' })
   createdAt!: Date;
 
   @OneToMany(() => Offer, (offer) => offer.auction)

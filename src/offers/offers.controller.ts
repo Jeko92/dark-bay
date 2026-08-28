@@ -1,21 +1,22 @@
+import { Body, Controller, Get, Param, Post } from '@nestjs/common';
 import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Param,
-  Delete,
-} from '@nestjs/common';
-import { OfferService } from './offers.service';
+  ApiConflictResponse,
+  ApiCreatedResponse,
+  ApiForbiddenResponse,
+  ApiNotFoundResponse,
+  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
+import { OffersService } from './offers.service';
 import { CreateOfferDto } from './dto/create-offer.dto';
-import { UpdateOfferDto } from './dto/update-offer.dto';
-import { ApiConflictResponse, ApiCreatedResponse, ApiForbiddenResponse, ApiNotFoundResponse, ApiOperation } from '@nestjs/swagger';
 import { UserSummaryDto } from 'src/users/dto/user-summary.dto';
 
-@Controller('offer')
-export class OfferController {
-  constructor(private readonly offerService: OfferService) {}
+@ApiTags('offers')
+@Controller('auctions/:auctionId/offers')
+export class OffersController {
+  constructor ( private readonly offersService: OffersService ) {
+  }
 
   @ApiOperation({ summary: 'Create a new offer' })
   @ApiNotFoundResponse({ description: 'Auction not found.' })
@@ -23,32 +24,31 @@ export class OfferController {
   @ApiConflictResponse({ description: 'You have already placed an offer for this auction.' }) //TODO: Check wording
   @ApiCreatedResponse({ description: 'The offer has been successfully placed.' })
   @Post()
-  placeOffer(
-    @Body() createOfferDto: CreateOfferDto, 
-    @Param ('auctionId') auctionId: string, 
+  placeOffer (
+    @Body() createOfferDto: CreateOfferDto,
+    @Param('auctionId') auctionId: string,
     @Body('bidder') bidderId: string
   ) {
     const bidder = { id: bidderId } as UserSummaryDto;
-    return this.offerService.placeOffer(auctionId, createOfferDto, bidder);
+    return this.offersService.placeOffer(auctionId, createOfferDto, bidder);
   }
 
+  @ApiOperation({ summary: 'Get all offers for an auction' })
+  @ApiOkResponse({
+    description: 'Returns all offers for the auction, newest first.',
+  })
   @Get()
-  findAll() {
-    return this.offerService.findAll();
+  findAllForAuction ( @Param('auctionId') auctionId: string ) {
+    return this.offersService.findAllForAuction(auctionId);
   }
 
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.offerService.findOne(+id);
-  }
-
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateOfferDto: UpdateOfferDto) {
-    return this.offerService.update(+id, updateOfferDto);
-  }
-
-  @Delete(':id')
-  remove(@Param('id') id: string) {
-    return this.offerService.remove(+id);
+  @ApiOperation({ summary: 'Get the current price of an auction' })
+  @ApiOkResponse({
+    description:
+      'Returns the current highest offer, or the starting price if there are no offers yet.',
+  })
+  @Get('current-price')
+  getCurrentPrice ( @Param('auctionId') auctionId: string ) {
+    return this.offersService.getCurrentPrice(auctionId);
   }
 }
