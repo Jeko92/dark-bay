@@ -7,7 +7,6 @@ import { UserModule } from '../users/users.module';
 import { LocalStrategy } from './local.strategy';
 import { JwtStrategy } from './jwt.strategy';
 import { UserService } from '../users/users.service';
-import { User } from '../users/user.entity.ts';
 
 @Module({
   imports: [
@@ -15,15 +14,14 @@ import { User } from '../users/user.entity.ts';
     PassportModule,
     JwtModule.register({
       secret: process.env['JWT_SECRET'] || 'default_secret_key',
-      signOptions: { expiresIn: '45d' },
+      signOptions: { expiresIn: '1h' },
     }),
   ],
   providers: [
     AuthService,
     LocalStrategy,
     JwtStrategy,
-    UserService,
-    User,
+    UserService
   ],
   controllers: [AuthController],
   exports: [AuthService, JwtModule],
