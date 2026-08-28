@@ -8,6 +8,6 @@ import { Auction } from './entities/auction.entity';
   imports: [TypeOrmModule.forFeature([Auction])],
   controllers: [AuctionsController],
   providers: [AuctionsService],
-  exports: [AuctionsService]
+  exports: [AuctionsService],
 })
 export class AuctionsModule {}

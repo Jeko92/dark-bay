@@ -4,7 +4,7 @@ import {
   Get,
   Param,
   ParseUUIDPipe,
-  Post
+  Post,
 } from '@nestjs/common';
 import { AuctionsService } from './auctions.service';
 import { CreateAuctionDto } from './dto/create-auction.dto';

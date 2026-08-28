@@ -13,6 +13,7 @@ import { Offer } from './entities/offer.entity';
 import { User } from '../users/entities/user.entity';
 import { UserSummaryDto } from '../users/dto/user-summary.dto';
 import { AuctionsService } from '../auctions/auctions.service';
+import { isAuctionOpen } from 'src/common/utils/auction-status';
 
 @Injectable()
 export class OffersService {
@@ -33,22 +34,22 @@ export class OffersService {
       throw new NotFoundException(`Auction ${auctionId} not found`);
     }
 
-    if (auction.endDate <= new Date()) {
+    if (!isAuctionOpen(auction.data.endDate)) {
       throw new ConflictException(
         `Auction ${auctionId} is closed and no longer accepts offers`,
       );
     }
 
-    if (auction.seller.id === bidder.id) {
+    if (auction.data.seller.id === bidder.id) {
       throw new ForbiddenException('Sellers cannot bid on their own auctions');
     }
 
     const highestOffer = await this.getHighestOfferAmount(auctionId);
 
     if (highestOffer === null) {
-      if (createOfferDto.amount < auction.startingPrice) {
+      if (createOfferDto.amount < auction.data.startingPrice) {
         throw new ConflictException(
-          `Offer amount must be at least the starting price (${auction.startingPrice})`,
+          `Offer amount must be at least the starting price (${auction.data.startingPrice})`,
         );
       }
     } else if (createOfferDto.amount <= highestOffer) {
@@ -59,7 +60,7 @@ export class OffersService {
 
     const offer = this.offersRepository.create({
       ...createOfferDto,
-      auction,
+      auction: auction.data,
       bidder: bidder as User,
     });
     const saved = await this.offersRepository.save(offer);
@@ -87,7 +88,7 @@ export class OffersService {
     }
 
     const highestOffer = await this.getHighestOfferAmount(auctionId);
-    return highestOffer ?? auction.startingPrice;
+    return highestOffer ?? auction.data.startingPrice;
   }
 
   private getHighestOfferAmount(auctionId: string): Promise<number | null> {

@@ -5,13 +5,13 @@ import {
   Delete,
   Param,
   ParseUUIDPipe,
-  Post
+  Post,
 } from '@nestjs/common';
 import {
   ApiConflictResponse,
   ApiOkResponse,
   ApiOperation,
-  ApiTags
+  ApiTags,
 } from '@nestjs/swagger';
 import { UserService } from './users.service';
 

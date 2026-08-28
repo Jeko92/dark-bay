@@ -2,7 +2,11 @@ import { Controller, Post, UseGuards, Body, Request } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
 import { type AuthenticatedUser, AuthService } from './auth.service';
 import { LoginDto } from './dto/login.dto';
-import { ApiOperation, ApiOkResponse, ApiUnauthorizedResponse } from '@nestjs/swagger';
+import {
+  ApiOperation,
+  ApiOkResponse,
+  ApiUnauthorizedResponse,
+} from '@nestjs/swagger';
 import { LoginResponseDto } from './dto/login-response.dto';
 import { Public } from 'src/common/decorators/public.decorator';
 

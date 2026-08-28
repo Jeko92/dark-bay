@@ -1,14 +1,14 @@
 import {
   ConflictException,
   Injectable,
-  NotFoundException
+  NotFoundException,
 } from '@nestjs/common';
 import { CreateUserDto } from './dto/create-user.dto';
 import { InjectRepository } from '@nestjs/typeorm';
 import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { UserResponseDto } from './dto/user-response.dto';
-import { hashSecret } from '../common/utils/hashUtils';
+import { hashSecret } from '../common/utils/hash-utils';
 
 @Injectable()
 export class UserService {
@@ -17,9 +17,9 @@ export class UserService {
     private readonly usersRepository: Repository<User>,
   ) {}
 
-  async create(createUserDto: CreateUserDto):Promise<UserResponseDto> {
+  async create(createUserDto: CreateUserDto): Promise<UserResponseDto> {
     const existing = await this.findByUsername(createUserDto.username);
-    if(existing){
+    if (existing) {
       throw new ConflictException(
         `Username "${createUserDto.username}" is already taken`,
       );
@@ -37,8 +37,8 @@ export class UserService {
     return this.usersRepository.find();
   }
 
-  async findByUsername(username: string):Promise<User | null> {
-    return this.usersRepository.findOneBy({username});
+  async findByUsername(username: string): Promise<User | null> {
+    return this.usersRepository.findOneBy({ username });
   }
 
   findOne(id: string) {
