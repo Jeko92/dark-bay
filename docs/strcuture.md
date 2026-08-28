@@ -20,9 +20,9 @@
 * [ ] How do you handle clients requesting a specific page size or filtering auctions by their current status (open vs. closed)? Make sure to include metadata
   * (total items, total pages) in your paginated responses.
 * Define schemas for Entities
-* [ ] Auctions fields (title, description), pricing (starting price, current price), lifecycle (end date)
-* [ ] Offer fields (amount, seller, bidder)
-* [ ] User fields (username, password)
+* [x] Auctions fields (title, description), pricing (starting price, current price), lifecycle (end date)
+* [x] Offer fields (amount, seller, bidder)
+* [x] User fields (username, password)
 
 ## Security
 * [ ] Protect routes

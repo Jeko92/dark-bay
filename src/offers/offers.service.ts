@@ -33,7 +33,7 @@ export class OffersService {
       throw new NotFoundException(`Auction ${auctionId} not found`);
     }
 
-    if (auction.endDate < new Date()) {
+    if (auction.endDate <= new Date()) {
       throw new ConflictException(
         `Auction ${auctionId} is closed and no longer accepts offers`,
       );
