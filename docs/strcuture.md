@@ -43,7 +43,8 @@
 # Auction
 * [x] Scaffold module
 * [x] Model the `Auction` entity
-* [ ] Create DTOs (Add Swagger decorators ...demonstrating the expected format)
+* [x] Create DTOs
+* [ ] Swagger Decorators for Entities
 * [ ] Business logic (service)
 * [ ] Controller (call service) (Add swagger decorators ...demonstrating the expected format)
 * [ ] Establish its relationship with the `Offer`.
@@ -57,7 +58,8 @@
 # Offer
 * [X] Scaffold module
 * [X] Model the `Offer` entity 
-* [ ] Create DTOs (Add Swagger decorators ...demonstrating the expected format)
+* [x] Create DTOs
+* [ ] Swagger Decorators for Entities 
 * [ ] Business logic (service)
 * [ ] Controller (call service) (Add swagger decorators ...demonstrating the expected format)
 * [ ] Establish its relationship with the `Auction`
@@ -71,7 +73,8 @@
 # User
 * [X] Scaffold module
 * [X] Model the `User` Entity
-* [ ] Create DTOs (Add Swagger decorators ...demonstrating the expected format)
+* [x] Create DTOs
+* [ ] Swagger Decorators for Entities
 * [ ] Business logic (service)
 * [ ] Controller (call service) (Add swagger decorators ...demonstrating the expected format)
 * [ ] Which HTTP status code best communicates a conflict with the current state of the resource?
