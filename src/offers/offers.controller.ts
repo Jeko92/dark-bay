@@ -5,8 +5,10 @@ import {
   Param,
   ParseUUIDPipe,
   Post,
+  Req,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiConflictResponse,
   ApiCreatedResponse,
   ApiForbiddenResponse,
@@ -18,6 +20,7 @@ import {
 import { OffersService } from './offers.service';
 import { CreateOfferDto } from './dto/create-offer.dto';
 import { UserSummaryDto } from 'src/users/dto/user-summary.dto';
+import type { RequestWithUser } from 'src/auth/request-with-user.interface';
 
 @ApiTags('offers')
 @Controller('auctions/:auctionId/offers')
@@ -35,13 +38,17 @@ export class OffersController {
   @ApiCreatedResponse({
     description: 'The offer has been successfully placed.',
   })
+  @ApiBearerAuth()
   @Post()
   placeOffer(
     @Body() createOfferDto: CreateOfferDto,
     @Param('auctionId', ParseUUIDPipe) auctionId: string,
-    @Body('bidder') bidderId: string,
+    @Req() req: RequestWithUser,
   ) {
-    const bidder = { id: bidderId } as UserSummaryDto;
+    const bidder: UserSummaryDto = {
+      id: req.user.id,
+      username: req.user.username,
+    };
     return this.offersService.placeOffer(auctionId, createOfferDto, bidder);
   }
 

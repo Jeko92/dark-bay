@@ -8,12 +8,14 @@ import {
   Post,
 } from '@nestjs/common';
 import {
+  ApiBearerAuth,
   ApiConflictResponse,
   ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { UserService } from './users.service';
+import { Public } from 'src/common/decorators/public.decorator';
 
 @ApiTags('users')
 @Controller('users')
@@ -23,12 +25,14 @@ export class UserController {
   @ApiOperation({ summary: 'Create a new user' })
   @ApiConflictResponse({ description: 'Username already taken' })
   @ApiOkResponse({ description: 'Returns a list of all users.' })
+  @Public()
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @ApiOperation({ summary: 'Delete a user' })
+  @ApiBearerAuth()
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.remove(id);

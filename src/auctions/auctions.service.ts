@@ -18,9 +18,9 @@ import { InjectRepository } from '@nestjs/typeorm';
 import { AuctionResponseDto } from './dto/auction-response.dto';
 import { plainToInstance } from 'class-transformer';
 import { AuctionQueryDto } from './dto/auction-query.dto';
-import { PaginationQueryDto } from 'src/common/dto/pagination-query.dto';
 import { auctionStatusWhereClause } from '../common/utils/auction-status';
 import { RequestWithUser } from '../auth/request-with-user.interface';
+import { PaginationMetaDto } from 'src/common/dto/pagination-meta.dto';
 
 @Injectable()
 export class AuctionsService {
@@ -32,6 +32,7 @@ export class AuctionsService {
 
   async create(
     createAuctionDto: CreateAuctionDto,
+    sellerId: string,
   ): Promise<AuctionResponseDto> {
     const defaultDurationDays = Number(
       this.configService.getOrThrow<string>('DEFAULT_AUCTION_DURATION_DAYS'),
@@ -40,9 +41,8 @@ export class AuctionsService {
       ? new Date(createAuctionDto.endDate)
       : addDays(new Date(), defaultDurationDays);
 
-    const { sellerId, ...rest } = createAuctionDto;
     const auction = this.auctionsRepository.create({
-      ...rest,
+      ...createAuctionDto,
       endDate,
       seller: { id: sellerId } as Auction['seller'],
     });
@@ -55,7 +55,7 @@ export class AuctionsService {
 
   async findAll(
     query: AuctionQueryDto,
-  ): Promise<{ data: AuctionResponseDto[]; meta: PaginationQueryDto }> {
+  ): Promise<{ data: AuctionResponseDto[]; meta: PaginationMetaDto }> {
     const { page = 1, limit = 10, status, minPrice, maxPrice } = query;
 
     const skip = (page - 1) * limit;
@@ -89,6 +89,7 @@ export class AuctionsService {
       meta: {
         page,
         limit,
+        total,
         totalPages: Math.ceil(total / limit),
       },
     };
@@ -122,6 +123,6 @@ export class AuctionsService {
       );
     }
 
-    await this.auctionsRepository.remove({ ...auction.data }[0]);
+    await this.auctionsRepository.delete(id);
   }
 }

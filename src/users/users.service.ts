@@ -9,6 +9,7 @@ import { User } from './entities/user.entity';
 import { Repository } from 'typeorm';
 import { UserResponseDto } from './dto/user-response.dto';
 import { hashSecret } from '../common/utils/hash-utils';
+import { plainToInstance } from 'class-transformer';
 
 @Injectable()
 export class UserService {
@@ -30,22 +31,25 @@ export class UserService {
       passwordHash: hashSecret(createUserDto.password),
     });
 
-    return await this.usersRepository.save(user);
+    const saved = await this.usersRepository.save(user);
+    return plainToInstance(UserResponseDto, saved, {
+      excludeExtraneousValues: true,
+    });
   }
 
-  findAll() {
-    return this.usersRepository.find();
-  }
+  // findAll() {
+  //   return this.usersRepository.find();
+  // }
 
   async findByUsername(username: string): Promise<User | null> {
     return this.usersRepository.findOneBy({ username });
   }
 
-  findOne(id: string) {
-    return this.usersRepository.findOne({
-      where: { id },
-    });
-  }
+  // findOne(id: string) {
+  //   return this.usersRepository.findOne({
+  //     where: { id },
+  //   });
+  // }
 
   async remove(id: string) {
     const result = await this.usersRepository.delete(id);

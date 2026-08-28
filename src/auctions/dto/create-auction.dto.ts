@@ -6,7 +6,6 @@ import {
   IsOptional,
   IsPositive,
   IsString,
-  IsUUID,
   MaxLength,
 } from 'class-validator';
 
@@ -33,14 +32,6 @@ export class CreateAuctionDto {
   @IsNumber()
   @IsPositive()
   startingPrice!: number;
-
-  // TODO: This one is temporary, identity should come from the JWT.
-  @ApiProperty({
-    description: 'Who is selling this item',
-    example: 'Supermario',
-  })
-  @IsUUID()
-  sellerId!: string;
 
   @ApiProperty({
     description: 'ISO 8601 date. Defaults to 3 days from creation if omitted.',

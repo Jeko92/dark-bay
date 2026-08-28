@@ -5,6 +5,7 @@ import {
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
 import { isPublicHandler } from './is-public.util';
+import type { RequestWithUser } from 'src/auth/request-with-user.interface';
 
 @Injectable()
 export class IsAdminGuard implements CanActivate {
@@ -15,7 +16,7 @@ export class IsAdminGuard implements CanActivate {
       return true;
     }
 
-    const request = context.switchToHttp().getRequest();
+    const request = context.switchToHttp().getRequest<RequestWithUser>();
 
     return request.user?.roles?.includes('admin') ?? false;
   }
