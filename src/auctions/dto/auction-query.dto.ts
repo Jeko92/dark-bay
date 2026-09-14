@@ -13,6 +13,8 @@ export class AuctionQueryDto extends PaginationQueryDto {
   @IsIn(['open', 'closed'])
   status?: 'open' | 'closed';
 
+  // Bound from the `?min-price=`/`?max-price=` query params (see README)
+  // via @Expose's `name`, so the DTO itself can stay camelCase.
   @ApiPropertyOptional({
     name: 'min-price',
     description: 'Minimum starting price (inclusive).',
@@ -34,4 +36,13 @@ export class AuctionQueryDto extends PaginationQueryDto {
   @Type(() => Number)
   @IsNumber()
   maxPrice?: number;
+
+  @ApiPropertyOptional({
+    enum: ['ending-soon', 'ending-late'],
+    description:
+      'Sort by end date. Omit for the default (ending-late, i.e. endDate DESC).',
+  })
+  @IsOptional()
+  @IsIn(['ending-soon', 'ending-late'])
+  sort?: 'ending-soon' | 'ending-late';
 }

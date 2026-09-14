@@ -1,5 +1,3 @@
-import { Offer } from 'src/offers/entities/offer.entity';
-import { User } from 'src/users/entities/user.entity';
 import {
   Column,
   CreateDateColumn,
@@ -8,8 +6,10 @@ import {
   OneToMany,
   PrimaryGeneratedColumn,
 } from 'typeorm';
+import { Offer } from '../../offers/entities/offer.entity';
+import { User } from '../../users/entities/user.entity';
 
-@Entity('auction')
+@Entity('auctions')
 export class Auction {
   @PrimaryGeneratedColumn('uuid')
   id!: string;
@@ -29,7 +29,7 @@ export class Auction {
   @ManyToOne(() => User)
   seller!: User;
 
-  @CreateDateColumn({ type: 'datetime' })
+  @CreateDateColumn()
   createdAt!: Date;
 
   @OneToMany(() => Offer, (offer) => offer.auction)

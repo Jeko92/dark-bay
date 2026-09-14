@@ -1,73 +1,50 @@
-import {
-  Body,
-  Controller,
-  Get,
-  Param,
-  ParseUUIDPipe,
-  Post,
-  Req,
-} from '@nestjs/common';
+import { Controller, Get, Post, Body, Param, Request } from '@nestjs/common';
 import {
   ApiBearerAuth,
   ApiConflictResponse,
-  ApiCreatedResponse,
   ApiForbiddenResponse,
   ApiNotFoundResponse,
-  ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
 import { OffersService } from './offers.service';
 import { CreateOfferDto } from './dto/create-offer.dto';
-import { UserSummaryDto } from 'src/users/dto/user-summary.dto';
-import type { RequestWithUser } from 'src/auth/request-with-user.interface';
+import { OfferResponseDto } from './dto/offer-response.dto';
+import { Public } from '../common/decorators/public.decorator';
+import type { RequestWithUser } from '../auth/request-with-user.interface';
 
 @ApiTags('offers')
 @Controller('auctions/:auctionId/offers')
 export class OffersController {
   constructor(private readonly offersService: OffersService) {}
 
-  @ApiOperation({ summary: 'Create a new offer' })
-  @ApiNotFoundResponse({ description: 'Auction not found.' })
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Place a bid on an auction' })
+  @ApiNotFoundResponse({ description: 'Auction not found' })
   @ApiForbiddenResponse({
-    description: 'You are not allowed to create an offer for this auction.',
+    description: 'Sellers cannot bid on their own auctions',
   })
   @ApiConflictResponse({
-    description: 'You have already placed an offer for this auction.',
-  }) //TODO: Check wording
-  @ApiCreatedResponse({
-    description: 'The offer has been successfully placed.',
+    description: 'Auction is closed, or the bid does not meet the price rules',
   })
-  @ApiBearerAuth()
   @Post()
   placeOffer(
+    @Param('auctionId') auctionId: string,
     @Body() createOfferDto: CreateOfferDto,
-    @Param('auctionId', ParseUUIDPipe) auctionId: string,
-    @Req() req: RequestWithUser,
-  ) {
-    const bidder: UserSummaryDto = {
+    @Request() req: RequestWithUser,
+  ): Promise<OfferResponseDto> {
+    return this.offersService.placeOffer(auctionId, createOfferDto, {
       id: req.user.id,
       username: req.user.username,
-    };
-    return this.offersService.placeOffer(auctionId, createOfferDto, bidder);
+    });
   }
 
-  @ApiOperation({ summary: 'Get all offers for an auction' })
-  @ApiOkResponse({
-    description: 'Returns all offers for the auction, newest first.',
-  })
+  @ApiOperation({ summary: 'List the bid history for an auction' })
+  @Public()
   @Get()
-  findAllForAuction(@Param('auctionId', ParseUUIDPipe) auctionId: string) {
+  findAllForAuction(
+    @Param('auctionId') auctionId: string,
+  ): Promise<OfferResponseDto[]> {
     return this.offersService.findAllForAuction(auctionId);
-  }
-
-  @ApiOperation({ summary: 'Get the current price of an auction' })
-  @ApiOkResponse({
-    description:
-      'Returns the current highest offer, or the starting price if there are no offers yet.',
-  })
-  @Get('current-price')
-  getCurrentPrice(@Param('auctionId', ParseUUIDPipe) auctionId: string) {
-    return this.offersService.getCurrentPrice(auctionId);
   }
 }

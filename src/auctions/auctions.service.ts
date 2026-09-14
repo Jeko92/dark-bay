@@ -3,10 +3,8 @@ import {
   Injectable,
   NotFoundException,
 } from '@nestjs/common';
-import { CreateAuctionDto } from './dto/create-auction.dto';
-import { addDays } from 'src/common/utils/add-days';
+import { InjectRepository } from '@nestjs/typeorm';
 import { ConfigService } from '@nestjs/config';
-import { Auction } from './entities/auction.entity';
 import {
   Between,
   FindOptionsWhere,
@@ -14,13 +12,16 @@ import {
   MoreThanOrEqual,
   Repository,
 } from 'typeorm';
-import { InjectRepository } from '@nestjs/typeorm';
-import { AuctionResponseDto } from './dto/auction-response.dto';
 import { plainToInstance } from 'class-transformer';
+import { CreateAuctionDto } from './dto/create-auction.dto';
+import { AuctionResponseDto } from './dto/auction-response.dto';
+import { Auction } from './entities/auction.entity';
+import { User } from '../users/entities/user.entity';
+import { UserSummaryDto } from '../users/dto/user-summary.dto';
+import { addDays } from '../common/utils/utils';
+import { auctionStatusWhereClause } from '../common/utils/auction-status.util';
 import { AuctionQueryDto } from './dto/auction-query.dto';
-import { auctionStatusWhereClause } from '../common/utils/auction-status';
-import { RequestWithUser } from '../auth/request-with-user.interface';
-import { PaginationMetaDto } from 'src/common/dto/pagination-meta.dto';
+import type { RequestWithUser } from '../auth/request-with-user.interface';
 
 @Injectable()
 export class AuctionsService {
@@ -32,7 +33,7 @@ export class AuctionsService {
 
   async create(
     createAuctionDto: CreateAuctionDto,
-    sellerId: string,
+    seller: UserSummaryDto,
   ): Promise<AuctionResponseDto> {
     const defaultDurationDays = Number(
       this.configService.getOrThrow<string>('DEFAULT_AUCTION_DURATION_DAYS'),
@@ -44,19 +45,16 @@ export class AuctionsService {
     const auction = this.auctionsRepository.create({
       ...createAuctionDto,
       endDate,
-      seller: { id: sellerId } as Auction['seller'],
+      seller: seller as User,
     });
-
     const saved = await this.auctionsRepository.save(auction);
     return plainToInstance(AuctionResponseDto, saved, {
       excludeExtraneousValues: true,
     });
   }
 
-  async findAll(
-    query: AuctionQueryDto,
-  ): Promise<{ data: AuctionResponseDto[]; meta: PaginationMetaDto }> {
-    const { page = 1, limit = 10, status, minPrice, maxPrice } = query;
+  async findAll(query: AuctionQueryDto) {
+    const { page = 1, limit = 10, status, minPrice, maxPrice, sort } = query;
 
     const skip = (page - 1) * limit;
 
@@ -74,10 +72,14 @@ export class AuctionsService {
 
     const [auctions, total] = await this.auctionsRepository.findAndCount({
       where,
-      relations: { seller: true },
+      // `offers` is loaded so AuctionResponseDto can derive currentPrice
+      // (the highest offer, or startingPrice if none). Fine at this scale;
+      // a larger dataset would want a MAX(amount) subquery instead of
+      // loading every offer row per auction.
+      relations: { seller: true, offers: true },
       skip,
       take: limit,
-      order: { endDate: 'DESC' },
+      order: { endDate: sort === 'ending-soon' ? 'ASC' : 'DESC' },
     });
 
     const data = plainToInstance(AuctionResponseDto, auctions, {
@@ -95,27 +97,21 @@ export class AuctionsService {
     };
   }
 
-  async findOne(id: string): Promise<{ data: AuctionResponseDto }> {
+  async findOne(id: string): Promise<Auction> {
     const auction = await this.auctionsRepository.findOne({
       where: { id },
-      relations: { seller: true },
+      relations: { seller: true, offers: true },
     });
     if (!auction) {
       throw new NotFoundException(`Auction with id ${id} not found`);
     }
-    const data = plainToInstance(AuctionResponseDto, auction, {
-      excludeExtraneousValues: true,
-    });
-
-    return {
-      data: data,
-    };
+    return auction;
   }
 
   async remove(id: string, requester: RequestWithUser['user']): Promise<void> {
     const auction = await this.findOne(id);
 
-    const isOwner = auction.data.seller.id === requester.id;
+    const isOwner = auction.seller.id === requester.id;
     const isAdmin = requester.roles.includes('admin');
     if (!isOwner && !isAdmin) {
       throw new ForbiddenException(
@@ -123,6 +119,6 @@ export class AuctionsService {
       );
     }
 
-    await this.auctionsRepository.delete(id);
+    await this.auctionsRepository.remove(auction);
   }
 }

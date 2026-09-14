@@ -2,7 +2,6 @@ import {
   ConflictException,
   ForbiddenException,
   Injectable,
-  NotFoundException,
 } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -13,7 +12,7 @@ import { Offer } from './entities/offer.entity';
 import { User } from '../users/entities/user.entity';
 import { UserSummaryDto } from '../users/dto/user-summary.dto';
 import { AuctionsService } from '../auctions/auctions.service';
-import { isAuctionOpen } from 'src/common/utils/auction-status';
+import { isAuctionOpen } from '../common/utils/utils';
 
 @Injectable()
 export class OffersService {
@@ -30,26 +29,22 @@ export class OffersService {
   ): Promise<OfferResponseDto> {
     const auction = await this.auctionsService.findOne(auctionId);
 
-    if (!auction) {
-      throw new NotFoundException(`Auction ${auctionId} not found`);
-    }
-
-    if (!isAuctionOpen(auction.data.endDate)) {
+    if (!isAuctionOpen(auction.endDate)) {
       throw new ConflictException(
         `Auction ${auctionId} is closed and no longer accepts offers`,
       );
     }
 
-    if (auction.data.seller.id === bidder.id) {
+    if (auction.seller.id === bidder.id) {
       throw new ForbiddenException('Sellers cannot bid on their own auctions');
     }
 
     const highestOffer = await this.getHighestOfferAmount(auctionId);
 
     if (highestOffer === null) {
-      if (createOfferDto.amount < auction.data.startingPrice) {
+      if (createOfferDto.amount < auction.startingPrice) {
         throw new ConflictException(
-          `Offer amount must be at least the starting price (${auction.data.startingPrice})`,
+          `Offer amount must be at least the starting price (${auction.startingPrice})`,
         );
       }
     } else if (createOfferDto.amount <= highestOffer) {
@@ -60,7 +55,7 @@ export class OffersService {
 
     const offer = this.offersRepository.create({
       ...createOfferDto,
-      auction: auction.data,
+      auction,
       bidder: bidder as User,
     });
     const saved = await this.offersRepository.save(offer);
@@ -82,13 +77,8 @@ export class OffersService {
 
   async getCurrentPrice(auctionId: string): Promise<number> {
     const auction = await this.auctionsService.findOne(auctionId);
-
-    if (!auction) {
-      throw new NotFoundException(`Auction ${auctionId} not found`);
-    }
-
     const highestOffer = await this.getHighestOfferAmount(auctionId);
-    return highestOffer ?? auction.data.startingPrice;
+    return highestOffer ?? auction.startingPrice;
   }
 
   private getHighestOfferAmount(auctionId: string): Promise<number | null> {
