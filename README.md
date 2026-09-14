@@ -10,7 +10,7 @@ frontend — this is a pure JSON REST API, built with NestJS.
 ## Tech Stack
 
 - **Framework:** NestJS (CommonJS, strict TypeScript)
-- **Database:** SQLite via `better-sqlite3` + TypeORM
+- **Database:** PostgreSQL + TypeORM
 - **Auth:** Passport + `@nestjs/jwt`, global guard with `@Public()` opt-out
 - **Docs:** `@nestjs/swagger` (OpenAPI, CLI plugin enabled)
 - **Package manager:** npm
