@@ -1,72 +1,77 @@
 import {
-  Body,
   Controller,
   Delete,
   Get,
+  Post,
+  Body,
   HttpCode,
   HttpStatus,
   Param,
   ParseUUIDPipe,
-  Post,
   Query,
-  Req,
+  Request,
+  SerializeOptions,
 } from '@nestjs/common';
-import { AuctionsService } from './auctions.service';
-import { CreateAuctionDto } from './dto/create-auction.dto';
-import { ApiOperation } from 'node_modules/@nestjs/swagger/dist/decorators/api-operation.decorator';
 import {
   ApiBearerAuth,
   ApiForbiddenResponse,
-  ApiNoContentResponse,
   ApiNotFoundResponse,
-  ApiOkResponse,
+  ApiOperation,
+  ApiTags,
 } from '@nestjs/swagger';
+import { AuctionsService } from './auctions.service';
+import { CreateAuctionDto } from './dto/create-auction.dto';
+import { AuctionResponseDto } from './dto/auction-response.dto';
 import { AuctionQueryDto } from './dto/auction-query.dto';
-import type { RequestWithUser } from 'src/auth/request-with-user.interface';
-import { Public } from 'src/common/decorators/public.decorator';
+import { Public } from '../common/decorators/public.decorator';
+import type { RequestWithUser } from '../auth/request-with-user.interface';
 
+@ApiTags('auctions')
 @Controller('auctions')
 export class AuctionsController {
   constructor(private readonly auctionsService: AuctionsService) {}
 
-  @ApiOperation({ summary: 'Create a new auction' })
-  @ApiOkResponse({ description: 'The auction has been successfully created.' })
   @ApiBearerAuth()
+  @ApiOperation({ summary: 'Create a new auction' })
   @Post()
   create(
     @Body() createAuctionDto: CreateAuctionDto,
-    @Req() req: RequestWithUser,
+    @Request() req: RequestWithUser,
   ) {
-    return this.auctionsService.create(createAuctionDto, req.user.id);
+    return this.auctionsService.create(createAuctionDto, {
+      id: req.user.id,
+      username: req.user.username,
+    });
   }
 
-  @ApiOperation({ summary: 'Get all auctions' })
-  @ApiOkResponse({ description: 'Returns a list of all auctions.' })
+  @ApiOperation({ summary: 'List auctions with pagination and filtering' })
   @Public()
   @Get()
   findAll(@Query() query: AuctionQueryDto) {
     return this.auctionsService.findAll(query);
   }
 
-  @ApiOperation({ summary: 'Get a specific auction by ID' })
-  @ApiOkResponse({ description: 'Returns the auction with the specified ID.' })
-  @ApiNotFoundResponse({ description: 'Auction not found.' })
+  @ApiOperation({ summary: 'Get an auction by id' })
+  @ApiNotFoundResponse({ description: 'Auction not found' })
   @Public()
   @Get(':id')
+  @SerializeOptions({ type: AuctionResponseDto })
   findOne(@Param('id', ParseUUIDPipe) id: string) {
     return this.auctionsService.findOne(id);
   }
 
-  @ApiOperation({ summary: 'Delete an auction' })
-  @ApiNoContentResponse({ description: 'The auction has been deleted.' })
-  @ApiNotFoundResponse({ description: 'Auction not found.' })
-  @ApiForbiddenResponse({
-    description: 'Only the auction owner or an admin can delete this auction.',
-  })
   @ApiBearerAuth()
-  @HttpCode(HttpStatus.NO_CONTENT)
+  @ApiOperation({ summary: 'Delete an auction (owner or admin only)' })
+  @ApiNotFoundResponse({ description: 'Auction not found' })
+  @ApiForbiddenResponse({
+    description: 'Only the auction owner or an admin can delete this auction',
+  })
   @Delete(':id')
-  remove(@Param('id', ParseUUIDPipe) id: string, @Req() req: RequestWithUser) {
+  @HttpCode(HttpStatus.NO_CONTENT)
+  remove(
+    @Param('id', ParseUUIDPipe) id: string,
+    @Request() req: RequestWithUser,
+  ) {
     return this.auctionsService.remove(id, req.user);
   }
 }

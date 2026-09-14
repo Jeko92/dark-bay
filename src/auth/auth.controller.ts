@@ -1,30 +1,55 @@
-import { Controller, Post, UseGuards, Body, Request } from '@nestjs/common';
-import { AuthGuard } from '@nestjs/passport';
-import { type AuthenticatedUser, AuthService } from './auth.service';
-import { LoginDto } from './dto/login.dto';
 import {
+  Body,
+  Controller,
+  Get,
+  Post,
+  Request,
+  UseGuards,
+} from '@nestjs/common';
+import { AuthGuard } from '@nestjs/passport';
+import {
+  ApiBearerAuth,
+  ApiConflictResponse,
   ApiOperation,
-  ApiOkResponse,
+  ApiTags,
   ApiUnauthorizedResponse,
 } from '@nestjs/swagger';
-import { LoginResponseDto } from './dto/login-response.dto';
-import { Public } from 'src/common/decorators/public.decorator';
+import { AuthService } from './auth.service';
+import { UsersService } from '../users/users.service';
+import { CreateUserDto } from '../users/dto/create-user.dto';
+import { LoginDto } from './dto/login.dto';
+import type { RequestWithUser } from './request-with-user.interface';
+import { Public } from '../common/decorators/public.decorator';
 
-type AuthenticatedRequest = Request & {
-  user: AuthenticatedUser;
-};
-
+@ApiTags('auth')
 @Controller('auth')
 export class AuthController {
-  constructor(private authService: AuthService) {}
+  constructor(
+    private readonly authService: AuthService,
+    private readonly usersService: UsersService,
+  ) {}
 
-  @ApiOperation({ summary: 'Log in with username and password' })
-  @ApiOkResponse({ type: LoginResponseDto })
+  @ApiOperation({ summary: 'Register a new user' })
+  @ApiConflictResponse({ description: 'Username already taken' })
+  @Public()
+  @Post('register')
+  register(@Body() createUserDto: CreateUserDto) {
+    return this.usersService.create(createUserDto);
+  }
+
+  @ApiOperation({ summary: 'Log in and receive a JWT' })
   @ApiUnauthorizedResponse({ description: 'Invalid credentials' })
   @Public()
   @UseGuards(AuthGuard('local'))
   @Post('login')
-  login(@Request() req: AuthenticatedRequest, @Body() _loginDto: LoginDto) {
+  login(@Body() _loginDto: LoginDto, @Request() req: RequestWithUser) {
     return this.authService.login(req.user);
+  }
+
+  @ApiBearerAuth()
+  @ApiOperation({ summary: 'Get the current authenticated user' })
+  @Get('me')
+  me(@Request() req: RequestWithUser) {
+    return req.user;
   }
 }

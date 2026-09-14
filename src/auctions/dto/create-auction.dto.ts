@@ -1,4 +1,3 @@
-import { ApiProperty } from '@nestjs/swagger';
 import {
   IsDateString,
   IsNotEmpty,
@@ -8,21 +7,16 @@ import {
   IsString,
   MaxLength,
 } from 'class-validator';
+import { ApiProperty, ApiPropertyOptional } from '@nestjs/swagger';
 
 export class CreateAuctionDto {
-  @ApiProperty({ description: 'Title of the auction', example: 'Vintage SNES' })
   @IsString()
   @IsNotEmpty()
-  @MaxLength(200)
+  @MaxLength(100)
   title!: string;
 
-  @ApiProperty({
-    description: 'Short Description of the Auction',
-    example: '16Bit Video Console from the 90ies.',
-  })
   @IsString()
   @IsNotEmpty()
-  @MaxLength(2000)
   description!: string;
 
   @ApiProperty({
@@ -33,7 +27,7 @@ export class CreateAuctionDto {
   @IsPositive()
   startingPrice!: number;
 
-  @ApiProperty({
+  @ApiPropertyOptional({
     description: 'ISO 8601 date. Defaults to 3 days from creation if omitted.',
     example: '2026-09-01T00:00:00.000Z',
   })

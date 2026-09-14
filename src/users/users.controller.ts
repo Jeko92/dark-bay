@@ -1,4 +1,3 @@
-import { CreateUserDto } from './dto/create-user.dto';
 import {
   Body,
   Controller,
@@ -10,29 +9,26 @@ import {
 import {
   ApiBearerAuth,
   ApiConflictResponse,
-  ApiOkResponse,
   ApiOperation,
   ApiTags,
 } from '@nestjs/swagger';
-import { UserService } from './users.service';
-import { Public } from 'src/common/decorators/public.decorator';
+import { UsersService } from './users.service';
+import { CreateUserDto } from './dto/create-user.dto';
 
 @ApiTags('users')
+@ApiBearerAuth()
 @Controller('users')
-export class UserController {
-  constructor(private readonly usersService: UserService) {}
+export class UsersController {
+  constructor(private readonly usersService: UsersService) {}
 
   @ApiOperation({ summary: 'Create a new user' })
   @ApiConflictResponse({ description: 'Username already taken' })
-  @ApiOkResponse({ description: 'Returns a list of all users.' })
-  @Public()
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
     return this.usersService.create(createUserDto);
   }
 
   @ApiOperation({ summary: 'Delete a user' })
-  @ApiBearerAuth()
   @Delete(':id')
   remove(@Param('id', ParseUUIDPipe) id: string) {
     return this.usersService.remove(id);
