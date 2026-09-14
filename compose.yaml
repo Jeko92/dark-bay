@@ -1,0 +1,29 @@
+# Local Postgres for development only. Production uses Render's managed
+# Postgres (DATABASE_URL set directly in the Render service's environment) —
+# this file is never used in CI/CD or in the Dockerfile.
+#
+# Start with: docker compose up -d
+# The app (run via `npm run start:dev` on the host, not in a container) reads
+# DATABASE_URL from .env, which should point at localhost:5432 here.
+services:
+  postgres:
+    image: postgres:17-alpine
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: darkbay
+      POSTGRES_PASSWORD: darkbay
+      POSTGRES_DB: darkbay
+    ports:
+      # Host port 5433, not 5432 — avoids clashing with a Postgres already
+      # running natively on the host (e.g. a Homebrew install).
+      - '5433:5432'
+    volumes:
+      - darkbay-postgres-data:/var/lib/postgresql/data
+    healthcheck:
+      test: ['CMD-SHELL', 'pg_isready -U darkbay']
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+volumes:
+  darkbay-postgres-data:
