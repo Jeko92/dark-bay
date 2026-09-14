@@ -16,16 +16,30 @@ if (!databaseUrl) {
 // connections stay on Render's private network and don't need SSL at all
 // (leave DATABASE_SSL unset). Only set DATABASE_SSL=true for an external
 // connection (e.g. connecting from outside Render, like a local machine).
-// rejectUnauthorized is disabled here because that's the common case for
-// hosted Postgres where the full CA chain isn't in Node's trust store —
-// it trades away MITM protection for convenience. For a stronger setup,
-// download the provider's CA certificate and pass it as `ca` instead.
+//
+// When SSL is on, verify by default — pass DATABASE_CA_CERT (the
+// provider's CA bundle, PEM text) to enable that. Skipping verification
+// entirely is a separate, explicit opt-in (DATABASE_SSL_INSECURE=true)
+// rather than something DATABASE_SSL=true does implicitly, since trading
+// away MITM protection shouldn't be the default behavior of "turn SSL on".
 const useSsl = process.env['DATABASE_SSL'] === 'true';
+const caCert = process.env['DATABASE_CA_CERT'];
+const insecureSsl = process.env['DATABASE_SSL_INSECURE'] === 'true';
+
+if (useSsl && !caCert && insecureSsl) {
+  console.warn(
+    'DATABASE_SSL_INSECURE=true: connecting to Postgres over SSL without ' +
+      'verifying the server certificate. Set DATABASE_CA_CERT instead once ' +
+      "you have the provider's CA bundle.",
+  );
+}
 
 export const AppDataSource = new DataSource({
   type: 'postgres',
   url: databaseUrl,
-  ssl: useSsl ? { rejectUnauthorized: false } : false,
+  ssl: useSsl
+    ? { ca: caCert, rejectUnauthorized: caCert ? true : !insecureSsl }
+    : false,
   entities: [Auction, Offer, User, Watchlist],
   migrations: ['src/db/migrations/*.ts'],
   synchronize: false,
